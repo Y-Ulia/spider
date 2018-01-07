@@ -17,7 +17,7 @@
 		pre {padding-left: 22.5px;padding-right: 22.5px;}
 	</style>
 </head>
-<body>
+<body style="padding-bottom: 100px">
 	<div class="spider container">
 		<div class="row text-center">
 			<h1>网站数据爬取</h1>
@@ -85,7 +85,7 @@ for(let i = 0, len = dom.length; i < len; i++) {
 	})
 } -->
 		<p>注意：用户可执行脚本不支持正则表达式</p>
-			<textarea class="form-control" rows="3" v-model="code"></textarea>
+			<textarea class="form-control" rows="3" v-model="code" style="min-height: 200px;"></textarea>
 		</div>
 		<div class="row" v-show="data" v-cloak>
 			<pre id="json-renderer"></pre>
