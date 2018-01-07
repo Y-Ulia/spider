@@ -3,7 +3,7 @@
 
 安装或升级最新版本`node.js`
 
-配置`phantomjs`[http://phantomjs.org/download.html]环境
+配置[phantomjs](http://phantomjs.org/download.html)环境
 
 全局安装：`npm install pm2 -g`
 
