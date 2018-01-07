@@ -1,0 +1,26 @@
+{
+  "name": "spider",
+  "version": "1.0.0",
+  "description": "构建一个简单的可视化爬虫界面",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Y-Ulia/spider.git"
+  },
+  "keywords": [
+    "spider"
+  ],
+  "author": "Ulia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Y-Ulia/spider/issues"
+  },
+  "homepage": "https://github.com/Y-Ulia/spider#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.2"
+  }
+}

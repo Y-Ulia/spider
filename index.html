@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Spider爬取数据</title>
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/vue/2.4.4/vue.min.js"></script>
+	<script src="https://cdn.bootcss.com/axios/0.16.2/axios.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+		(function($){function isCollapsable(arg){return arg instanceof Object&&Object.keys(arg).length>0}function isUrl(string){var regexp=/^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;return regexp.test(string)}function json2html(json,options){var html='';if(typeof json==='string'){json=json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');if(isUrl(json))html+='<a href="'+json+'" class="json-string">'+json+'</a>';else html+='<span class="json-string">"'+json+'"</span>'}else if(typeof json==='number'){html+='<span class="json-literal">'+json+'</span>'}else if(typeof json==='boolean'){html+='<span class="json-literal">'+json+'</span>'}else if(json===null){html+='<span class="json-literal">null</span>'}else if(json instanceof Array){if(json.length>0){html+='[<ol class="json-array">';for(var i=0;i<json.length;++i){html+='<li>';if(isCollapsable(json[i])){html+='<a href class="json-toggle"></a>'}html+=json2html(json[i],options);if(i<json.length-1){html+=','}html+='</li>'}html+='</ol>]'}else{html+='[]'}}else if(typeof json==='object'){var key_count=Object.keys(json).length;if(key_count>0){html+='{<ul class="json-dict">';for(var key in json){if(json.hasOwnProperty(key)){html+='<li>';var keyRepr=options.withQuotes?'<span class="json-string">"'+key+'"</span>':key;if(isCollapsable(json[key])){html+='<a href class="json-toggle">'+keyRepr+'</a>'}else{html+=keyRepr}html+=': '+json2html(json[key],options);if(--key_count>0)html+=',';html+='</li>'}}html+='</ul>}'}else{html+='{}'}}return html}$.fn.jsonViewer=function(json,options){options=options||{};return this.each(function(){var html=json2html(json,options);if(isCollapsable(json))html='<a href class="json-toggle"></a>'+html;$(this).html(html);$(this).off('click');$(this).on('click','a.json-toggle',function(){var target=$(this).toggleClass('collapsed').siblings('ul.json-dict, ol.json-array');target.toggle();if(target.is(':visible')){target.siblings('.json-placeholder').remove()}else{var count=target.children('li').length;var placeholder=count+(count>1?' items':' item');target.after('<a href class="json-placeholder">'+placeholder+'</a>')}return false});$(this).on('click','a.json-placeholder',function(){$(this).siblings('a.json-toggle').click();return false});if(options.collapsed==true){$(this).find('a.json-toggle').click()}})}})(jQuery);
+	</script>
+	<style>
+		 ul.json-dict, ol.json-array {list-style-type: none;margin: 0 0 0 1px;border-left: 1px dotted #ccc;padding-left: 2em;}.json-string {color: #0B7500;}.json-literal {color: #1A01CC;font-weight: bold;}a.json-toggle {position: relative;color: inherit;text-decoration: none;}a.json-toggle:focus {outline: none;}a.json-toggle:before {color: #aaa;content: "\25BC";position: absolute;display: inline-block;width: 1em;left: -1em;}a.json-toggle.collapsed:before {transform: rotate(-90deg);-ms-transform: rotate(-90deg);-webkit-transform: rotate(-90deg);}a.json-placeholder {color: #aaa;padding: 0 1em;text-decoration: none;}a.json-placeholder:hover {text-decoration: underline;}
+		strong { background: #000; color: #fff;padding: 1px 5px;border-radius: 3px; }
+		em {color: red}
+		pre {padding-left: 22.5px;padding-right: 22.5px;}
+	</style>
+</head>
+<body>
+	<div class="spider container">
+		<div class="row text-center">
+			<h1>网站数据爬取</h1>
+		</div>
+		<div class="row" style="margin-left: 0;margin-right: 0">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="input-group">
+						<span class="input-group-addon">爬取链接</span>
+						<input type="text" class="form-control" v-model="url" placeholder="url">
+						<!-- <span class="input-group-addon btn btn-default text-center" @click="spiderData()">Send</span> -->
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="input-group">
+						<span class="input-group-addon">CSS选择器</span>
+						<input type="text" class="form-control" v-model="selector" placeholder="selector">
+						<span class="input-group-addon btn btn-default text-center" @click="spiderData()">Send</span>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="row" style="margin-bottom: 20px">
+			<h5>1.输入变量：ObjectDOM（DOM对象Object） 2.输出变量：ArrayData（EPG数据Array）</h5>
+			<h5>请编写获取EPG数据可执行脚本（推荐使用JQuery）</h5>
+			<h5>示例：</h5>
+<p>
+<pre>
+var dom = $(<strong>ObjectDOM</strong>).find('.content'), nextText;
+for(let i = 0, len = dom.length; i < len; i++) {
+	nextText = $(dom[(i+1)]).children('.time').text();
+	<strong>ArrayData</strong>.push({
+		<em>HoraInicio</em>: $(dom[i]).children('.time').text().split(':').join(''),
+		<em>HoraFim</em>: nextText ? nextText.split(':').join('') : $(dom[i]).children('.time').text().split(':').join(''),
+		<em>Titulo</em>: $.trim($(dom[i]).children('h2').text()),
+		<em>Descricao</em>: $(dom[i]).children('.sub-title').text()
+	})
+}
+</pre>
+</p>
+
+<!-- mitv网站 -->
+<!-- 链接地址：http://www.tvmap.com.br/Band -->
+<!-- var dom = $(ObjectDOM).find('.content'), nextText;
+for(let i = 0, len = dom.length; i < len; i++) {
+	nextText = $(dom[(i+1)]).children('.time').text();
+	ArrayData.push({
+		HoraInicio: $(dom[i]).children('.time').text().split(':').join(''),
+		HoraFim: nextText ? nextText.split(':').join('') : $(dom[i]).children('.time').text().split(':').join(''),
+		Titulo: $.trim($(dom[i]).children('h2').text()),
+		Descricao: $(dom[i]).children('.sub-title').text()
+	})
+} -->
+
+<!-- tvmap网站 -->
+<!-- 链接地址：http://www.tvmap.com.br/Band -->
+<!-- var dom = $(ObjectDOM).find('li'), nextText;
+for(let i = 0, len = dom.length; i < len; i++) {
+	nextText = $(dom[(i+1)]).children('.hourbox').text().replace(' h','');
+	ArrayData.push({
+		HoraInicio: $(dom[i]).children('.hourbox').text().replace(' h','').split(':').join(''),
+		HoraFim: nextText ? nextText.split(':').join('') : $(dom[i]).children('.hourbox').text().replace(' h','').split(':').join(''),
+		Titulo: $(dom[i]).children('.timelineheader').text(),
+		Descricao: $(dom[i]).children('.text_exposed_root').text(),
+	})
+} -->
+		<p>注意：用户可执行脚本不支持正则表达式</p>
+			<textarea class="form-control" rows="3" v-model="code"></textarea>
+		</div>
+		<div class="row" v-show="data" v-cloak>
+			<pre id="json-renderer"></pre>
+		</div>
+	</div>
+	<script>
+		var spider = new Vue({
+			el: '.container',
+			data: {
+				url: 'https://mi.tv/br/canais/woohoo',
+				selector: '#listings .broadcasts',
+				code: "var dom = $(ObjectDOM).find('.content'), nextText;for(let i = 0, len = dom.length; i < len; i++) {nextText = $(dom[(i+1)]).children('.time').text();ArrayData.push({HoraInicio: $(dom[i]).children('.time').text().split(':').join(''),HoraFim: nextText ? nextText.split(':').join('') : $(dom[i]).children('.time').text().split(':').join(''),Titulo: $.trim($(dom[i]).children('h2').text()),Descricao: $(dom[i]).children('.sub-title').text()})}",
+				data: ''
+			},
+			watch: {
+				data(val) {
+					$('#json-renderer').jsonViewer(val);
+				}
+			},
+			methods: {
+				spiderData() {
+					axios.get('/spider', {
+						params: {
+							url: this.url,
+							code: encodeURIComponent(this.selector)
+						}
+					}).then((res) => {
+						var data = res.data;
+						if(!data.state) {
+							var ObjectDOM = document.createElement("div");
+								ObjectDOM.innerHTML = data.data;
+							this.data = this.getJSON(ObjectDOM)
+							console.log(this.data);
+						} else {
+							console.log(data)
+						}
+					}, (err) => {
+						console.log(err)
+					})
+				},
+				getJSON(ObjectDOM) {
+					var ArrayData = [], ObjectDOM;
+					console.log(ObjectDOM);
+					console.log(ArrayData);
+					eval(this.code)
+					return ArrayData;
+				}
+			}
+		})
+	</script>
+</body>
+</html>
